@@ -87,7 +87,7 @@ public class TrainingSessionServlet extends HttpServlet {
             }
             else{
                 // CODE GOES HERE
-                System.err.println("Finding attendees..");
+                System.err.println("Finding attendees registered to session " + p_id + "...");
                 out.println(dao.find(Integer.parseInt(p_id)));
             }
             

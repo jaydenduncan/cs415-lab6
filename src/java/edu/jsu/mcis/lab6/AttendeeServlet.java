@@ -83,7 +83,7 @@ public class AttendeeServlet extends HttpServlet {
                 System.err.println("Attendee GET request...");
             }
             else{
-                System.err.println("Getting attendee...");
+                System.err.println("Getting attendee #" + p_id + "...");
                 out.println(dao.find(Integer.parseInt(p_id)));
             }
             
@@ -121,18 +121,14 @@ public class AttendeeServlet extends HttpServlet {
         
         try ( PrintWriter out = response.getWriter()) {
             
-            int attendeeid = Integer.parseInt(request.getParameter("attendeeid"));
             String firstname = request.getParameter("firstname");
             String lastname = request.getParameter("lastname");
             String displayname = request.getParameter("displayname");
-            int sessionid = Integer.parseInt(request.getParameter("sessionid"));
             
             AttendeeDAO aDAO = daoFactory.getAttendeeDAO();
-            RegistrationDAO rDAO = daoFactory.getRegistrationDAO();
             
-            Attendee aObj = new Attendee(attendeeid, firstname, lastname, displayname);
+            Attendee aObj = new Attendee(null, firstname, lastname, displayname);
             out.println(aDAO.create(aObj));
-            out.println(rDAO.create(sessionid, attendeeid));
              
         }
         catch (Exception e) {
@@ -160,7 +156,7 @@ public class AttendeeServlet extends HttpServlet {
         
         try ( PrintWriter out = response.getWriter()) {
             
-            int id = Integer.parseInt(request.getParameter("id"));
+            int id = Integer.parseInt(request.getParameter("attendeeid"));
             String newfirstname = request.getParameter("newfirstname");
             String newlastname = request.getParameter("newlastname");
             String newdisplayname = request.getParameter("newdisplayname");

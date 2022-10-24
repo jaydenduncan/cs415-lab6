@@ -101,9 +101,9 @@ public class RegistrationServlet extends HttpServlet {
         
         try ( PrintWriter out = response.getWriter()) {
             
-            int sessionid = Integer.parseInt(request.getParameter("sessionid"));
-            int attendeeid = Integer.parseInt(request.getParameter("attendeeid"));
-            int newsessionid = Integer.parseInt(request.getParameter("newsessionid"));
+            String sessionid = request.getParameter("putsessionid");
+            String attendeeid = request.getParameter("putattendeeid");
+            String newsessionid = request.getParameter("putnewsessionid");
             
             RegistrationDAO dao = daoFactory.getRegistrationDAO();
             
@@ -136,8 +136,8 @@ public class RegistrationServlet extends HttpServlet {
         
         try ( PrintWriter out = response.getWriter()) {
             
-            int sessionid = Integer.parseInt(request.getParameter("sessionid"));
-            int attendeeid = Integer.parseInt(request.getParameter("attendeeid"));
+            int sessionid = Integer.parseInt(request.getParameter("deletesessionid"));
+            int attendeeid = Integer.parseInt(request.getParameter("deleteattendeeid"));
             
             RegistrationDAO dao = daoFactory.getRegistrationDAO();
             

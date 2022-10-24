@@ -19,7 +19,7 @@ public class RegistrationDAO {
             + "sessionid=? WHERE attendeeid=? AND sessionid=?";
     private final String QUERY_DELETE_REG = "DELETE FROM registration WHERE attendeeid=? "
             + "AND sessionid=?";
-    private final String QUERY_DELETE_ATTENDEE = "DELETE FROM attendee WHERE attendeeid=?";
+    private final String QUERY_DELETE_ATTENDEE = "DELETE FROM attendee WHERE id=?";
     private final String QUERY_ATTENDEE_CODE = "SELECT CONCAT(\"R\", LPAD(attendeeid, 6, 0)) AS num FROM registration " +
             "WHERE attendeeid=? AND sessionid=?";
     
@@ -170,7 +170,7 @@ public class RegistrationDAO {
         return JSONValue.toJSONString(json);
     }
     
-    public String update(int sessionid, int attendeeid, int newsessionid){
+    public String update(String sessionid, String attendeeid, String newsessionid){
         
         JSONObject json = new JSONObject();
         json.put("success", false);
@@ -179,12 +179,20 @@ public class RegistrationDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         
+        System.err.println("Session ID: " + sessionid);
+        System.err.println("Attendee ID: " + attendeeid);
+        System.err.println("New Session ID: " + newsessionid);
+        
+        int int_sessionid = Integer.parseInt(sessionid);
+        int int_attendeeid = Integer.parseInt(attendeeid);
+        int int_newsessionid = Integer.parseInt(newsessionid);
+        
         try{
             
             ps = conn.prepareStatement(QUERY_UPDATE);
-            ps.setInt(1, newsessionid);
-            ps.setInt(2, attendeeid);
-            ps.setInt(3, sessionid);
+            ps.setInt(1, int_sessionid);
+            ps.setInt(2, int_attendeeid);
+            ps.setInt(3, int_newsessionid);
             ps.execute();
             
             json.put("success", true);
@@ -224,25 +232,34 @@ public class RegistrationDAO {
     
     public String delete(int sessionid, int attendeeid){
         
-        JSONObject json = new JSONObject();
-        json.put("success", false);
         
         Connection conn = daoFactory.getConnection();
         PreparedStatement ps = null;
         PreparedStatement ps2 = null;
         ResultSet rs = null;
         
+        JSONObject json = new JSONObject();
+        json.put("success", false);
+        
+        boolean result = false;
+        
         try{
             
             ps = conn.prepareStatement(QUERY_DELETE_REG);
             ps.setInt(1, attendeeid);
             ps.setInt(2, sessionid);
-            ps.execute();
+            
+            int updateCount = ps.executeUpdate();
+            
+            if(updateCount > 0){
+                result = true;
+            }
             
             ps2 = conn.prepareStatement(QUERY_DELETE_ATTENDEE);
             ps2.setInt(1, attendeeid);
+            ps2.execute();
             
-            json.put("success", true);
+            json.put("success", result);
             
         }
         catch(Exception e){

@@ -28,6 +28,7 @@ public class TrainingSessionDAO {
     
     public String find(int sessionid){
         
+        JSONObject container = new JSONObject();
         JSONArray records = new JSONArray();
         JSONParser parser = new JSONParser();
 
@@ -44,17 +45,19 @@ public class TrainingSessionDAO {
             boolean hasResults = ps.execute();
             
             if(hasResults){
+                container.put("success", true);
                 rs = ps.getResultSet();
                 while(rs.next()){
                     // CODE GOES HERE
                     
                     int attendeeID = rs.getInt("attendeeid");
-                    String attendeejsonString = aDAO.find(attendeeID); // json string
+                    String attendeejsonString = aDAO.find(attendeeID);
                     JSONObject attendeeObject = (JSONObject)parser.parse(attendeejsonString);
                     records.add(attendeeObject);
                     
                 }
             }
+            container.put("attendees", records);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -85,10 +88,11 @@ public class TrainingSessionDAO {
             
         }
         
-        return JSONValue.toJSONString(records);
+        return JSONValue.toJSONString(container);
     }
     
     public String list(){ 
+        JSONObject container = new JSONObject();
         JSONArray records = new JSONArray();
 
         Connection conn = daoFactory.getConnection();
@@ -101,6 +105,7 @@ public class TrainingSessionDAO {
             boolean hasResults = ps.execute();
             
             if(hasResults){
+                container.put("success", true);
                 rs = ps.getResultSet();
                 
                 while (rs.next()) {
@@ -114,6 +119,8 @@ public class TrainingSessionDAO {
                 }
             }
             
+            container.put("sessions", records);
+            
         }
         catch(Exception e){
             e.printStackTrace();
@@ -144,7 +151,7 @@ public class TrainingSessionDAO {
             
         }
         
-        return JSONValue.toJSONString(records);
+        return JSONValue.toJSONString(container);
     }
     
 }
